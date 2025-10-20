@@ -105,15 +105,6 @@ function LuaUIPage:RegisterAllEvent()
 end
 
 function LuaUIPage:autoRegisterRedDot()
-  local redDotTable = self.cs_page:GetRedDotList()
-  if not redDotTable then
-    return
-  end
-  for i, redDot in pairs(redDotTable) do
-    if redDot and redDot.autoRegister then
-      self:RegisterRedDot(redDot)
-    end
-  end
 end
 
 function LuaUIPage:RegisterEvent(eventId, funcCallback)
@@ -344,15 +335,6 @@ function LuaUIPage:RegisterRedDotById(redDot, redDotIdList, ...)
 end
 
 function LuaUIPage:RegisterRedDot(redDot, ...)
-  redDot.gameObject:SetActive(true)
-  local id = redDot:GetId()
-  
-  local function callBack()
-    self:UnRegisterRedDotById(id)
-  end
-  
-  redDot:SetLuaFunction(callBack)
-  redDotManager:RegisterRedDot(self, redDot, ...)
 end
 
 function LuaUIPage:SetDesignatedObjEnable(enable)

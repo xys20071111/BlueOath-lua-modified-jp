@@ -2,9 +2,9 @@ local BuildLogic = class("logic.BuildLogic")
 
 function BuildLogic:initialize()
   self:ResetData()
-  pushNoticeManager:_BindNotice("build", function()
-    return self:GetPushNoticeParams(Data.buildData:GetData())
-  end)
+  -- pushNoticeManager:_BindNotice("build", function()
+  --   return self:GetPushNoticeParams(Data.buildData:GetData())
+  -- end)
 end
 
 function BuildLogic:ResetData()

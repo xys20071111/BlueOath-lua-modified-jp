@@ -23,13 +23,13 @@ function PushNoticeManager:_PushNotice(paramList)
 end
 
 function PushNoticeManager:_PushAllNotice()
-  if #noticeSetting == 0 then
-    self:_ChangeNoticeSetting(SettingHelper.GetAllSetting().noticeData)
-  end
-  self:_CancelAllNotice()
-  for key, paramHandler in pairs(noticeParamMap) do
-    self:_PushNotice(paramHandler())
-  end
+  -- if #noticeSetting == 0 then
+  --   self:_ChangeNoticeSetting(SettingHelper.GetAllSetting().noticeData)
+  -- end
+  -- self:_CancelAllNotice()
+  -- for key, paramHandler in pairs(noticeParamMap) do
+  --   self:_PushNotice(paramHandler())
+  -- end
 end
 
 function PushNoticeManager:_CancelAllNotice()

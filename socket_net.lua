@@ -13,8 +13,7 @@ Socket.SlientSendMethod = {}
 local types = ProtobufTypeManager
 local serializer = ProtobufSerializer
 local connected = 2
-
-local function _GetStateID(state)
+local _GetStateID = function(state)
   if state == nil then
     return 0
   end
@@ -25,19 +24,16 @@ local function _GetStateID(state)
     end
   end
 end
-
-local function _GetStateByID(id)
+local _GetStateByID = function(id)
   if Socket.States[id] ~= nil then
     local state = Socket.States[id]
     Socket.States[id] = nil
     return state
   end
 end
-
-local function _FixTime(serverTime)
+local _FixTime = function(serverTime)
   time.syncTime(serverTime)
 end
-
 local receivedSign = true
 local m_timer, m_waitCo
 local seqMap = {}
@@ -100,7 +96,6 @@ function Socket.OnReceived(handle, method, time, errcode, errmsg, seq, isRespons
   end
   local pbType = types[method]
   if pbType == nil then
-    log("OnReceived: no pbType  method: " .. method)
     listener.handler(listener.target, nil, state, errcode, errmsg)
   elseif payload == nil then
     log("OnReceived: payload is nil")
@@ -114,10 +109,9 @@ function Socket.OnReceived(handle, method, time, errcode, errmsg, seq, isRespons
   end
 end
 
-local function onConnected(...)
+local onConnected = function(...)
 end
-
-local function onDisconnected(...)
+local onDisconnected = function(...)
 end
 
 function Socket.OnConnState(prev, curr)
@@ -133,8 +127,8 @@ function Socket.OnConnState(prev, curr)
 end
 
 function Socket.Init(...)
-  BabelTime.Net.NetLogic.Init()
-  BabelTime.Net.NetLogic.InitLuaCallbacks(Socket.OnConnState, Socket.OnReceived)
+  -- BabelTime.Net.NetLogic.Init()
+  -- BabelTime.Net.NetLogic.InitLuaCallbacks(Socket.OnConnState, Socket.OnReceived)
 end
 
 function Socket.Cleanup(...)
@@ -145,7 +139,7 @@ end
 function Socket.Connect(host, port)
   tokenRequestHeap = {}
   tokenNum = 0
-  BabelTime.Net.NetLogic.Connect(host, port)
+  -- BabelTime.Net.NetLogic.Connect(host, port)
 end
 
 function Socket.Disconnect()
@@ -153,7 +147,7 @@ function Socket.Disconnect()
     onDisconnected()
     return
   end
-  BabelTime.Net.NetLogic.Disconnect()
+  -- BabelTime.Net.NetLogic.Disconnect()
 end
 
 function Socket.RegisterHandler(eventName, handler, target, pbType)
@@ -207,7 +201,8 @@ function Socket.ConnectImp(host, port)
   if Socket.curState == SocketConnState.Connecting or Socket.curState == SocketConnState.Connected then
     return
   end
-  Socket.Connect(host, port)
+  -- Socket.Connect(host, port)
+  Socket.OnConnState(nil, 2)
 end
 
 Socket.close = Socket.Disconnect

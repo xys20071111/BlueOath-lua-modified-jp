@@ -88,13 +88,9 @@ function EquipService:_EnhanceBind(ret, state, err, errmsg)
 end
 
 function EquipService:_UpdateEquipInfo(ret, state, err, errmsg)
-  if err == 0 then
-    local info = dataChangeManager:PbToLua(ret, equip_pb.TEQUIPLIST)
+    local info = ret -- dataChangeManager:PbToLua(ret, equip_pb.TEQUIPLIST)
     Data.equipData:UpdateEquip(info)
     self:SendLuaEvent(LuaEvent.UpdateEquipMsg)
-  else
-    logError("UpdateEquipInfo err" .. err)
-  end
 end
 
 return EquipService

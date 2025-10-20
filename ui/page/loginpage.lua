@@ -482,9 +482,11 @@ function LoginPage:_InitSDKSocket()
 end
 
 function LoginPage:_InitSocket()
+  log("LoginPage:_InitSocket")
   if self.loginOver or self.clickEnter then
     return
   end
+  log("LoginPage:_InitSocket 1")
   local inputIp = self.m_tabWidgets.input_address.text
   if inputIp == "" then
     local serverIp = PlayerPrefs.GetString("serverIp")
@@ -497,6 +499,7 @@ function LoginPage:_InitSocket()
   else
     PlayerPrefs.SetString("serverIp", inputIp)
   end
+  log("LoginPage:_InitSocket 2")
   local postType = self.m_tabWidgets.txt_Port.text
   local post = 30008
   if postType == UIHelper.GetString(920000267) then
@@ -506,6 +509,7 @@ function LoginPage:_InitSocket()
   elseif postType == "40001" then
     post = 40001
   end
+  log("LoginPage:_InitSocket 3")
   PlayerPrefs.SetString("post", post)
   local inputId = self.m_tabWidgets.input_id.text
   if inputId == "" then
@@ -519,6 +523,7 @@ function LoginPage:_InitSocket()
     PlayerPrefs.SetString("userId", inputId)
   end
   Socket_net.ConnectImp(tostring(inputIp), post)
+  log("LoginPage:_InitSocket 4")
 end
 
 function LoginPage:OnSDKEnterGame()

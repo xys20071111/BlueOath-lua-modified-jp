@@ -45,7 +45,8 @@ end
 
 function UserService:SendLogin(param)
   local state = excMgr.ConnectCount
-  self:SendNetEvent("player.Login", param, state)
+  -- self:SendNetEvent("player.Login", param, state)
+  self:_ReceiveLogin(nil, state, 0, "")
 end
 
 function UserService:SendLogoff()
@@ -59,13 +60,16 @@ end
 
 function UserService:UserLogin(param)
   local state = excMgr.ConnectCount
-  self:SendNetEvent("user.UserLogin", param, state)
+  -- self:SendNetEvent("user.UserLogin", param, state)
+  self:_ReceiveUserLogin(nil, state, 0, "")
 end
 
 function UserService:SendSecretary(param)
   local arg = {SecretaryId = param}
   arg = dataChangeManager:LuaToPb(arg, user_pb.TSETUSERSECRETARYARG)
-  self:SendNetEvent("user.SetUserSecretary", arg)
+  -- self:SendNetEvent("user.SetUserSecretary", arg)
+  GlobalSettings.userInfo.SecretaryId = param
+  self:_SetUserSecretary()
 end
 
 function UserService:SendOrderRecord(param)
@@ -94,10 +98,12 @@ function UserService:_ReceiveLogin(msg, state, err, errmsg)
   if state ~= excMgr.ConnectCount then
     return
   end
+  local msg = { Ret = "ok", ErrCode = 0 }
   if err == 0 and msg.Ret == "ok" then
     if msg.ErrCode == 0 then
       local currState = excMgr.ConnectCount
-      self:SendNetEvent("player.GetUserList", nil, currState)
+      -- self:SendNetEvent("player.GetUserList", nil, currState)
+      self:_ReceiveUserList(nil, state, 0, "")
       self:SendLuaEvent(LuaEvent.PlayerLogin)
     else
       Logic.loginLogic:SetUserKick(msg.ErrCode)
@@ -114,7 +120,12 @@ function UserService:_ReceiveUserList(msg, state, err, errmsg)
     return
   end
   if err == 0 then
-    self:SendLuaEvent(LuaEvent.GetUserList, msg)
+    -- 转移至LoginLogic
+    self:SendLuaEvent(LuaEvent.GetUserList, {
+      ArrUser = {
+        [1] = GlobalSettings.userInfo
+      }
+    })
   else
     Socket_net.Disconnect()
     logError("player.GetUserList Fail" .. err)
@@ -147,13 +158,28 @@ function UserService:_SetMessage(msg, state, err, errmsg)
 end
 
 function UserService:_ReceiveUserLogin(msg, state, err, errmsg)
+  log("UserService:_ReceiveUserLogin")
   if state ~= excMgr.ConnectCount then
     return
   end
+  local msg = {
+    Ret = "ok"
+  }
   if err == 0 and msg.Ret == "ok" then
-    local currState = excMgr.ConnectCount
-    self:SendNetEvent("user.GetUserInfo", nil, currState)
-  elseif err == 0 and msg.Ret == "ban" then
+    -- self:SendNetEvent("user.GetUserInfo", nil, currState)
+    -- 初始化一下数据
+    self:_UpdateUserInfo()
+    Service.heroService:_UpdateHeroBagData()
+    Service.activityService:_UpdateActivityInfo()
+    Service.fleetService:_GetHerosTactic()
+    for _, v in pairs(GlobalSettings.copyInfo) do
+      Service.copyService:_GetCopyService(v)
+    end
+    Service.buildingService:_UpdateBuildingInfo(GlobalSettings.buildingInfo)
+    Service.equipService:_UpdateEquipInfo(GlobalSettings.equipInfo)
+    Service.illustrateService:_IllustrateInfo(GlobalSettings.illustrateInfo)
+    self:_ReceiveUserGetUserInfoFunc("abc", state, 0, "")
+  elseif msg.Ret == "ban" then
     local info = dataChangeManager:PbToLua(msg, user_pb.TUSERLOGINRET)
     Socket_net.Disconnect()
     self:SendLuaEvent(LuaEvent.UserBan, info)
@@ -166,9 +192,6 @@ function UserService:_ReceiveUserLogin(msg, state, err, errmsg)
 end
 
 function UserService:_ReceiveUserGetUserInfoFunc(msg, state, err, errmsg)
-  if state ~= excMgr.ConnectCount then
-    return
-  end
   if err == 0 then
     self:SendLuaEvent(LuaEvent.LoginOk, msg)
     eventManager:FireEventToCSharp(LuaCSharpEvent.LoginOk)
@@ -180,8 +203,7 @@ function UserService:_ReceiveUserGetUserInfoFunc(msg, state, err, errmsg)
 end
 
 function UserService:_UpdateUserInfo(ret, state, err, errmsg)
-  if err == 0 then
-    local userInfo = dataChangeManager:PbToLua(ret, user_pb.TGETUSERINFORET)
+    local userInfo = GlobalSettings.userInfo -- dataChangeManager:PbToLua(ret, user_pb.TGETUSERINFORET)
     if userInfo.Uid == nil and self.firstLogin then
       return
     end
@@ -193,9 +215,6 @@ function UserService:_UpdateUserInfo(ret, state, err, errmsg)
       self:SendLuaEvent(LuaEvent.ShopLevelGift)
       self:SendLuaEvent(LuaEvent.GoodsCopyBattle)
     end
-  else
-    logError("UpdateUserInfo err" .. err)
-  end
 end
 
 function UserService:_UpdateSvrTime(ret, state, err, errmsg)

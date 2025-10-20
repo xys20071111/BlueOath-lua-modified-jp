@@ -20,17 +20,17 @@ function MainStage:initialize()
 end
 
 function MainStage:StageEnter(lastPage, enterParam)
-  memoryUtil.LuaMemory("\232\191\155\229\133\165Main\231\138\182\230\128\129")
+  log("进入Main状态")
   self:RegisterEvent(LuaEvent.HomeSwitchState, self.__switchState, self)
   self:RegisterEvent(LuaEvent.DisconnectServer, self.__disconnectServer, self)
   self:RegisterEvent(LuaEvent.UserKick, excMgr._UserKick)
   self:__switchState({
     HomeStateID.MAIN
   })
-  addictionManager:Addiction()
+  -- addictionManager:Addiction()
   local tabTemp = {}
   if lastPage == EStageType.eStageLogin then
-    eventManager:SendEvent(LuaEvent.PushAllNotice)
+    -- eventManager:SendEvent(LuaEvent.PushAllNotice)
     tabTemp[1] = {"HomePage", "firstLogin"}
   elseif lastPage == EStageType.eStageSimpleBattle then
     local beStrongData = Logic.beStrongLogic:GetStrongPageData()

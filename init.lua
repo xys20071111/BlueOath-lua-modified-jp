@@ -1,4 +1,5 @@
 isDebug = false
+require("GlobalSettings")
 require("system.hotupdate")
 require("util.ReadOnlyMeta")
 require("unity_api")

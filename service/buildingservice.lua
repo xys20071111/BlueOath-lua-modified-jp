@@ -215,17 +215,13 @@ function BuildingService:_ReceiveResource(ret, state, err, errmsg)
 end
 
 function BuildingService:_UpdateBuildingInfo(ret, state, err, errmsg)
-  if err == 0 then
-    local buildingInfo = dataChangeManager:PbToLua(ret, building_pb.TUSERBUILDINGINFO)
+    local buildingInfo = ret -- dataChangeManager:PbToLua(ret, building_pb.TUSERBUILDINGINFO)
     Data.buildingData:SetData(buildingInfo)
     self:SendLuaEvent(LuaEvent.BuildingRefreshData)
     if Logic.loginLogic:GetLoginOK() == true then
       local noticeParam = Logic.buildingLogic:GetPushNoticeParams(buildingInfo.BuildingInfos)
       self:SendLuaEvent(LuaEvent.PushNotice, noticeParam)
     end
-  else
-    logError("err: " .. err .. ", errmsg: " .. errmsg)
-  end
 end
 
 function BuildingService:UseStrengthSpeedup(buildingId, useCount)

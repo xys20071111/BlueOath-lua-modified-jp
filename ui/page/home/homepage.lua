@@ -165,10 +165,6 @@ function HomePage:DoOnOpen()
   Logic.copyLogic:SetCopySign(EnterCopySign.Home)
   self:_UpdateRedDot()
   self:_PlayerData()
-  local dotInfo = {
-    info = "ui_main_scene"
-  }
-  RetentionHelper.Retention(PlatformDotType.uilog, dotInfo)
   local updateModule = moduleManager:OpenPageOpenModule()
   if updateModule ~= nil then
     moduleManager:SetOpenPageUpdateModule(nil)
@@ -184,8 +180,8 @@ function HomePage:DoOnOpen()
   if self.m_tabWidgets.obj_hide.activeSelf then
     actEnter:_CreateBanner()
   end
-  self:Refresh()
-  self:BuildSuccess()
+  -- self:Refresh()
+  -- self:BuildSuccess()
   self.m_tabWidgets.btn_announcement.gameObject:SetActive(false)
   announcementManager:EnableAnnouncement()
   if self.param then
@@ -202,10 +198,12 @@ function HomePage:DoOnOpen()
   eventManager:SendEvent(LuaEvent.IsCloseHomeGirl, false)
   local timer = FrameTimer.New(function()
     self:_SetSecretary()
-    self:_CorSignCheck()
+    -- self:_CorSignCheck()
+    self:_PlayLoginAnim()
+    -- self:_RegisterActSSRRedDot()
   end, self.firstDelay, 1)
   timer:Start()
-  self:_RegisterActSSRRedDot()
+  -- self:_RegisterActSSRRedDot()
   eventManager:SendEvent(LuaEvent.PlayNewYearEff)
   self:CheckShowLimitGiftPage()
 end
@@ -629,9 +627,6 @@ function HomePage:_OnLeftClose()
 end
 
 function HomePage:_UpdateRedDot()
-  if Data.guildData:inGuild() then
-    Service.guildService:SendHaveGuildWarReward()
-  end
   self:_CreateBottom()
 end
 
@@ -865,14 +860,14 @@ end
 function HomePage:_PlayerData()
   local tabUserInfo = Data.userData:GetUserData()
   local imageTab = configManager.GetDataById("config_parameter", 359).arrValue
-  local lastNum = string.sub(tabUserInfo.ServerId, string.len(tabUserInfo.ServerId), string.len(tabUserInfo.ServerId))
+  local lastNum = GlobalSettings.userInfo.ServerId -- string.sub(tabUserInfo.ServerId, string.len(tabUserInfo.ServerId), string.len(tabUserInfo.ServerId))
   local imgIndex = lastNum % #imageTab
   imgIndex = imgIndex ~= 0 and imgIndex or #imageTab
   UIHelper.SetImage(self.tab_Widgets.im_server, imageTab[imgIndex])
   self.tab_Widgets.tx_server.text = Logic.loginLogic.SDKInfo and Logic.loginLogic.SDKInfo.name or UIHelper.GetString(920000277)
-  local id = platformManager:getRoleId() or math.tointeger(tabUserInfo.Uid)
+  local id = math.tointeger(tabUserInfo.Uid)
   self.tab_Widgets.tx_id.text = string.format(UIHelper.GetString(920000739), id)
-  local inGuild = Data.guildData:inGuild()
+  local inGuild = false -- Data.guildData:inGuild()
   if inGuild then
     local ourGuild = Data.guildData:getOurGuildInfo()
     self.tab_Widgets.tx_guild.text = string.format(UIHelper.GetString(920000738), ourGuild:getName())

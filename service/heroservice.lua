@@ -117,13 +117,11 @@ function HeroService:_HeroIntensify(ret, state, err, errmsg)
 end
 
 function HeroService:_UpdateHeroBagData(ret, state, err, errmsg)
-  if ret ~= nil then
-    local info = dataChangeManager:PbToLua(ret, hero_pb.THEROINFO)
+    local info = GlobalSettings.heroBag -- dataChangeManager:PbToLua(ret, hero_pb.THEROINFO)
     Data.heroData:SetData(info)
     Data.wishData:UpdateWishHero()
     Data.equipData:RefreshHeroEquipData()
     self:SendLuaEvent(LuaEvent.UpdateHeroData)
-  end
 end
 
 function HeroService:SendHeroBreak(heroid, consumeIds, consumeItemIds)

@@ -257,7 +257,8 @@ function PlatformWrapper:cancelAllLocalNotification()
 end
 
 function PlatformWrapper:useSDK()
-  return BabelTimeSDK.UseSDK
+  -- return BabelTimeSDK.UseSDK
+  return false
 end
 
 function PlatformWrapper:sdkInitFinish()
