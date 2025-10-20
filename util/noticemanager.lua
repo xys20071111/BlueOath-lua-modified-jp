@@ -37,6 +37,7 @@ end
 
 function NoticeManager:ShowTip(content, position)
   position = position or Vector3.zero
+  logWarning(content)
   UIBoxManager:Tips(content, position)
 end
 

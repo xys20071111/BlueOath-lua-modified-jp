@@ -6,6 +6,7 @@ local WakeTableGroup = {}
 function ConfigManager.GetDataById(strName, strId, nocheck)
   if not strName or not strId then
     local str = string.format("config:%s strId:%s", tostring(strName), tostring(strId))
+    logError(str)
     noticeManager:ShowMsgBox(str)
     return nil
   end

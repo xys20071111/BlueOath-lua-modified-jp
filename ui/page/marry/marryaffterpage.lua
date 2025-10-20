@@ -13,20 +13,11 @@ function MarryAffterPage:RegisterAllEvent()
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_close, self._ClickClose, self)
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_marry, self._ClickBack, self)
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_tips, self._ClickTip, self)
-  UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_affectionGift, self._OnAffectionGiftBtnClick, self)
+   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_affectionGift, self._OnAffectionGiftBtnClick, self)
   self:RegisterEvent(LuaEvent.UpdateHeroAddAffection, self._UpdateAffectionCallBack)
 end
 
 function MarryAffterPage:_Dotinfo()
-  local shipInfoId = Logic.shipLogic:GetShipInfoIdByHeroId(self.param[1])
-  local name = Logic.shipLogic:GetName(shipInfoId)
-  local loveInfo, num = Logic.marryLogic:GetLoveInfo(self.param[1], MarryType.Love)
-  local dotinfo = {
-    info = "ui_open_marryafter",
-    ship_name = name,
-    affection = math.modf(num / 10000)
-  }
-  RetentionHelper.Retention(PlatformDotType.uilog, dotinfo)
 end
 
 function MarryAffterPage:_LoadInformation()
@@ -41,7 +32,7 @@ function MarryAffterPage:_LoadInformation()
   local noMarry = configManager.GetDataById("config_parameter", 155).arrValue
   local marryed = configManager.GetDataById("config_parameter", 156).arrValue
   local singleGirl = Data.heroData:GetHeroById(self.param[1])
-  if singleGirl.Name ~= "" then
+  if singleGirl.Name and singleGirl.Name ~= "" then
     UIHelper.SetText(self.tab_Widgets.tx_girlName, singleGirl.Name)
     self.tab_Widgets.tx_des.text = string.format(loveInfo.affection_describe, singleGirl.Name)
   else
@@ -51,7 +42,7 @@ function MarryAffterPage:_LoadInformation()
   local createTime = time.formatTimerToYMD(singleGirl.CreateTime)
   local marryTime = time.formatTimerToYMD(singleGirl.MarryTime)
   UIHelper.SetText(self.tab_Widgets.tx_createTime, createTime)
-  UIHelper.SetText(self.tab_Widgets.tx_marryTime, UIHelper.GetString(920000271) .. marryTime)
+  UIHelper.SetText(self.tab_Widgets.tx_marryTime, "誓约日" .. marryTime)
   UIHelper.SetImage(self.tab_Widgets.im_loveIcon, loveInfo.affection_icon)
   UIHelper.SetImage(self.tab_Widgets.im_girl, self.param[3])
   UIHelper.SetText(self.tab_Widgets.tx_userName, userData.Uname)

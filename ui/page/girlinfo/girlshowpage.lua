@@ -337,15 +337,15 @@ function GirlShowPage:_LoadSkillInfo(pskillArr, heroId)
     displayData.pskillId = pskillId
     displayData.heroId = heroId
     local showSkillId = Logic.shipLogic:GetReplaceSkillId(pskillId, heroId)
-    displayData.name = Logic.shipLogic:GetPSkillName(showSkillId)
-    displayData.icon = Logic.shipLogic:GetPSkillIcon(showSkillId, heroInfo.TemplateId)
-    displayData.lv = Logic.shipLogic:GetHeroPSkillLv(heroId, pskillId)
-    displayData.desc = Logic.shipLogic:GetPSkillDesc(showSkillId, displayData.lv)
-    displayData.type = Logic.shipLogic:GetPSkillType(showSkillId)
-    local bUnlock, msg = Logic.shipLogic:CheckHeroPSkillActive(heroId, showSkillId)
-    local bUnlock2 = Logic.shipLogic:CheckHeroPSkillActive(heroId, showSkillId)
-    displayData.lock, displayData.lockInfo = not bUnlock, msg
-    displayData.empty = false
+    -- displayData.name = Logic.shipLogic:GetPSkillName(showSkillId)
+    -- displayData.icon = Logic.shipLogic:GetPSkillIcon(showSkillId, heroInfo.TemplateId)
+    -- displayData.lv = Logic.shipLogic:GetHeroPSkillLv(heroId, pskillId)
+    -- displayData.desc = Logic.shipLogic:GetPSkillDesc(showSkillId, displayData.lv)
+    -- displayData.type = Logic.shipLogic:GetPSkillType(showSkillId)
+    -- local bUnlock, msg = Logic.shipLogic:CheckHeroPSkillActive(heroId, showSkillId)
+    -- local bUnlock2 = Logic.shipLogic:CheckHeroPSkillActive(heroId, showSkillId)
+    -- displayData.lock, displayData.lockInfo = not bUnlock, msg
+    displayData.empty = true
     displayArr[i] = displayData
   end
   local colorCache

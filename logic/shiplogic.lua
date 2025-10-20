@@ -771,8 +771,8 @@ function ShipLogic:GetPSkillName(pskillId)
   if type(pskillId) == "table" then
     return UIHelper.GetString(920000070)
   end
-  local id = self:GetPSkillDisplayIdByGroupId(pskillId)
-  return self:GetPSkillDisplayConfigById(id).skill_name
+  -- local id = self:GetPSkillDisplayIdByGroupId(pskillId)
+  return ""
 end
 
 function ShipLogic:GetPSkillIcon(pskillId, tid)
@@ -783,8 +783,8 @@ function ShipLogic:GetPSkillIcon(pskillId, tid)
       return self:GetPSkillIcon(pskillId[1])
     end
   end
-  local id = self:GetPSkillDisplayIdByGroupId(pskillId)
-  return self:GetPSkillDisplayConfigById(id).skill_icon
+  -- local id = self:GetPSkillDisplayIdByGroupId(pskillId)
+  return "" -- self:GetPSkillDisplayConfigById(id).skill_icon
 end
 
 function ShipLogic:_GetSpSkillIcon(templateId)
@@ -811,7 +811,7 @@ function ShipLogic:GetRecommendSkillBookId(pskillId)
 end
 
 function ShipLogic:GetPSkillDisplayIdByGroupId(skillGroupDictId)
-  return configManager.GetDataById("config_pskill_dict_group", skillGroupDictId).pskill_dict_display_id
+  return "" -- configManager.GetDataById("config_pskill_dict_group", skillGroupDictId).pskill_dict_display_id
 end
 
 function ShipLogic:GetPSkillDisplayConfigById(id)

@@ -96,13 +96,13 @@ function PropertyPage:_ShowFashion(illustrateId)
   UIHelper.CreateSubPart(widgets.obj_dress, widgets.trans_dress, #fashionDatas, function(index, tabPart)
     local data = fashionDatas[index]
     local have = Logic.fashionLogic:CheckFashionOwn(data.id)
-    tabPart.obj_weidianji:SetActive(not have)
-    tabPart.obj_dianji:SetActive(have)
+    tabPart.obj_weidianji:SetActive(false)
+    tabPart.obj_dianji:SetActive(true)
     UIHelper.SetText(tabPart.tx_subtitle, data.name)
     UIHelper.SetText(tabPart.tx_subtitle_wei, data.name)
     self.m_selectContainer[index] = tabPart.obj_select
     UGUIEventListener.AddButtonOnClick(tabPart.btn_subtitle, function()
-      if not have then
+      if false then
         noticeManager:ShowTip(UIHelper.GetString(910016))
       else
         eventManager:SendEvent(LuaEvent.FASHION_SwitchFashion, data)

@@ -40,15 +40,25 @@ end
 function MarryProcessPage:_LoadInformation()
   self.tab_Widgets.alp_text.gameObject:SetActive(true)
   self.tab_Widgets.btn_skip.gameObject:SetActive(false)
-  self.tab_Widgets.obj_ringOne:SetActive(self.param[3] == SelectMarryRing.RingOne)
-  self.tab_Widgets.obj_ringTwo:SetActive(self.param[3] == SelectMarryRing.RingSecond)
+  if self.param[3] == SelectMarryRing.RingOne then
+    self.tab_Widgets.obj_ringOne:SetActive(true)
+  elseif self.param[3] == SelectMarryRing.RingSecond then
+    self.tab_Widgets.obj_ringTwo:SetActive(true)
+  else
+    self.tab_Widgets.obj_ringOne:SetActive(true)
+  end
 end
 
 function MarryProcessPage:OpenRing()
   self.tab_Widgets.im_drag.gameObject:SetActive(false)
   self.tab_Widgets.im_hand.gameObject:SetActive(false)
-  SoundManager.Instance:PlayAudio(AudioName[self.param[3]])
-  self.ringEff = UIHelper.CreateUIEffect(RingEffType[self.param[3]], self.tab_Widgets.obj_ringEff)
+  if self.param[3] then
+    SoundManager.Instance:PlayAudio(AudioName[self.param[3]])
+    self.ringEff = UIHelper.CreateUIEffect(RingEffType[self.param[3]], self.tab_Widgets.obj_ringEff)
+  else
+    SoundManager.Instance:PlayAudio(AudioName[1])
+    self.ringEff = UIHelper.CreateUIEffect(RingEffType[self.param[1]], self.tab_Widgets.obj_ringEff)
+  end
   local bgTime = configManager.GetDataById("config_parameter", 199).value / 10000
   self.m_bgTimer = self:CreateTimer(function()
     self:_TickBgCharge()
@@ -263,7 +273,7 @@ function MarryProcessPage:_whitePlotEff(callBackFun)
 end
 
 function MarryProcessPage:BeginCheckVideoPause(objVideoPlay)
-  local function funcCheck()
+  local funcCheck = function()
     if IsNil(self.tab_Widgets.obj_continue) then
       return
     end
@@ -284,7 +294,6 @@ function MarryProcessPage:BeginCheckVideoPause(objVideoPlay)
       self.tab_Widgets.obj_continue:SetActive(bShow)
     end
   end
-  
   if self.objPauseCheckTimer == nil then
     self.objPauseCheckTimer = Timer.New(funcCheck, 0.01, -1)
   else

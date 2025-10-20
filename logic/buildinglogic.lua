@@ -880,43 +880,43 @@ function BuildingLogic:RecoverStrength()
 end
 
 function BuildingLogic:CheckoutHeroMoodChange(heroId)
-  local buildingData = Data.buildingData:GetHeroBuilding(heroId)
-  local buildingType = Data.buildingData:GetHeroBuildingType(heroId)
-  if buildingType then
-    local heroList = buildingData.HeroList
-    for i, hid in ipairs(heroList) do
-      if hid == heroId then
-        local now = time.getSvrTime()
-        if buildingType == MBuildingType.DormRoom then
-          do
-            local delta = now - buildingData.LastUpdateTime
-            local timeUnit = BuildingTimeUnit
-            local ratio = timeUnit / configManager.GetDataById("config_parameter", 206).value
-            local addSpeed = buildingData.ProduceSpeed * ratio
-            local addCount = delta / timeUnit * addSpeed
-            return addCount
-          end
-          break
-        end
-        do
-          local lastTime = 0
-          if buildingType == MBuildingType.ElectricFactory then
-            lastTime = Data.buildingData:GetWorkerUpdateTime()
-          else
-            lastTime = buildingData.LastUpdateTime
-          end
-          local delta = now - lastTime
-          local bcfg = configManager.GetDataById("config_buildinginfo", buildingData.Tid)
-          local timeUnit = BuildingTimeUnit
-          local ratio = timeUnit / configManager.GetDataById("config_parameter", 207).value
-          local costSpeed = bcfg.moodcost * ratio
-          local subCount = delta / timeUnit * costSpeed
-          return -subCount
-        end
-        break
-      end
-    end
-  end
+  -- local buildingData = Data.buildingData:GetHeroBuilding(heroId)
+  -- local buildingType = Data.buildingData:GetHeroBuildingType(heroId)
+  -- if buildingType then
+  --   local heroList = buildingData.HeroList
+  --   for i, hid in ipairs(heroList) do
+  --     if hid == heroId then
+  --       local now = time.getSvrTime()
+  --       if buildingType == MBuildingType.DormRoom then
+  --         do
+  --           local delta = now - buildingData.LastUpdateTime
+  --           local timeUnit = BuildingTimeUnit
+  --           local ratio = timeUnit / configManager.GetDataById("config_parameter", 206).value
+  --           local addSpeed = buildingData.ProduceSpeed * ratio
+  --           local addCount = delta / timeUnit * addSpeed
+  --           return addCount
+  --         end
+  --         break
+  --       end
+  --       do
+  --         local lastTime = 0
+  --         if buildingType == MBuildingType.ElectricFactory then
+  --           lastTime = Data.buildingData:GetWorkerUpdateTime()
+  --         else
+  --           lastTime = buildingData.LastUpdateTime
+  --         end
+  --         local delta = now - lastTime
+  --         local bcfg = configManager.GetDataById("config_buildinginfo", buildingData.Tid)
+  --         local timeUnit = BuildingTimeUnit
+  --         local ratio = timeUnit / configManager.GetDataById("config_parameter", 207).value
+  --         local costSpeed = bcfg.moodcost * ratio
+  --         local subCount = delta / timeUnit * costSpeed
+  --         return -subCount
+  --       end
+  --       break
+  --     end
+  --   end
+  -- end
   return 0
 end
 

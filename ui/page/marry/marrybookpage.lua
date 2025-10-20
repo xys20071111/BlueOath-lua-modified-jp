@@ -17,8 +17,6 @@ function MarryBookPage:RegisterAllEvent()
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_close, self._ClickClose, self)
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_marry, self._ClickMarry, self)
   UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_tips, self._ClickTip, self)
-  UGUIEventListener.AddButtonOnClick(self.tab_Widgets.btn_affectionGift, self._OnAffectionGiftBtnClick, self)
-  self:RegisterEvent(LuaEvent.UpdateHeroAddAffection, self._UpdateAffectionCallBack)
 end
 
 function MarryBookPage:_Dotinfo()
@@ -40,7 +38,7 @@ function MarryBookPage:_LoadInformation()
   local noMarry = configManager.GetDataById("config_parameter", 155).arrValue
   local marryed = configManager.GetDataById("config_parameter", 156).arrValue
   local singleGirl = Data.heroData:GetHeroById(self.param[1])
-  if singleGirl.Name ~= "" then
+  if singleGirl.Name and singleGirl.Name ~= "" then
     UIHelper.SetText(self.tab_Widgets.tx_girlName, singleGirl.Name)
     self.tab_Widgets.tx_des.text = string.format(loveInfo.affection_describe, singleGirl.Name)
   else
@@ -50,7 +48,7 @@ function MarryBookPage:_LoadInformation()
   local time = time.formatTimerToYMD(singleGirl.CreateTime)
   UIHelper.SetText(self.tab_Widgets.tx_createTime, time)
   UIHelper.SetImage(self.tab_Widgets.im_loveIcon, loveInfo.affection_icon, true)
-  local marry_allow_affection = Logic.marryLogic:GetAllowMarryAffection(self.param[1])
+  local marry_allow_affection = configManager.GetDataById("config_parameter", 163).value
   self.tab_Widgets.obj_no_marry:SetActive(num < marry_allow_affection)
   UIHelper.SetImage(self.tab_Widgets.im_girl, self.param[3])
   UIHelper.SetText(self.tab_Widgets.tx_userName, userData.Uname)
@@ -71,18 +69,11 @@ function MarryBookPage:_LoadInformation()
   self.tab_Widgets.im_girl.transform.anchoredPosition3D = Vector3.New(position[1], position[2], 0)
   self.tab_Widgets.im_girl.transform.localScale = Vector3.New(scale / 10000, scale / 10000, scale / 10000)
   self:_ShowCondition()
-  local shipFleetConf = Logic.shipLogic:GetShipFleetByHeroId(self.param[1])
-  local canMarry = shipFleetConf.cannot_marry == 0
-  self.tab_Widgets.obj_condition:SetActive(canMarry)
-  self.tab_Widgets.obj_no_marry:SetActive(canMarry)
-  self.tab_Widgets.obj_eff:SetActive(canMarry)
-  self.tab_Widgets.btn_marry.gameObject:SetActive(canMarry)
-  self.tab_Widgets.obj_cannotmarry:SetActive(not canMarry)
 end
 
 function MarryBookPage:_ShowCondition()
   local marry_cost = configManager.GetDataById("config_parameter", 162).arrValue
-  local marry_allow_affection = Logic.marryLogic:GetAllowMarryAffection(self.param[1])
+  local marry_allow_affection = configManager.GetDataById("config_parameter", 163).value
   local ringNum = Logic.bagLogic:ItemInfoById(marry_cost[2])
   if ringNum == nil then
     ringNum = 0
@@ -111,7 +102,7 @@ function MarryBookPage:_ClickMarry(...)
     return
   end
   local marry_cost = configManager.GetDataById("config_parameter", 162).arrValue
-  local marry_allow_affection = Logic.marryLogic:GetAllowMarryAffection(self.param[1])
+  local marry_allow_affection = configManager.GetDataById("config_parameter", 163).value
   local ringNum = Logic.bagLogic:ItemInfoById(marry_cost[2])
   if ringNum == nil then
     ringNum = 0
@@ -119,24 +110,13 @@ function MarryBookPage:_ClickMarry(...)
     ringNum = math.tointeger(ringNum.num)
   end
   local loveInfo, num = Logic.marryLogic:GetLoveInfo(self.param[1], MarryType.Love)
-  if marry_allow_affection > num then
-    local showClickTip = false
-    local shipConfig = Logic.shipLogic:GetShipShowByHeroId(self.param[1])
-    local shipShowId = configManager.GetDataById("config_parameter", 346).arrValue[2]
-    if shipConfig.ss_id == shipShowId then
-      local itemId = configManager.GetDataById("config_parameter", 347).arrValue[2]
-      showClickTip = Logic.activityLogic:CumuRechargeClickCount(itemId)
-    end
-    if not showClickTip then
-      noticeManager:OpenTipPage(self, UIHelper.GetString(1500007))
-    end
-  elseif ringNum < marry_cost[3] then
+  -- if marry_allow_affection > num then
+  if false then
+    noticeManager:OpenTipPage(self, UIHelper.GetString(1500007))
+  -- elseif ringNum < marry_cost[3] then
+  elseif false then
     globalNoitceManager:_OpenGoShopBox(marry_cost[2])
   else
-    local shipInfoId = Logic.shipLogic:GetShipInfoIdByHeroId(self.param[1])
-    local name = Logic.shipLogic:GetName(shipInfoId)
-    local dotinfo = {info = "ui_marry", ship_name = name}
-    RetentionHelper.Retention(PlatformDotType.uilog, dotinfo)
     UIHelper.OpenPage("SelectMarryRingPage", {
       self.param[1],
       ringNum
@@ -157,23 +137,6 @@ function MarryBookPage:DoOnHide()
 end
 
 function MarryBookPage:DoOnClose()
-end
-
-function MarryBookPage:_OnAffectionGiftBtnClick()
-  local userInfo = Data.userData:GetUserData()
-  local uid = tostring(userInfo.Uid)
-  local showRedDot = PlayerPrefs.GetInt(PlayerPrefsKey.AffectionGiftEnter .. uid, 1) == 1
-  if showRedDot then
-    PlayerPrefs.SetInt(PlayerPrefsKey.AffectionGiftEnter .. uid, 0)
-    eventManager:SendEvent(LuaEvent.ClickAffectionGiftEnter)
-  end
-  UIHelper.OpenPage("FavorabilityGiftPage", {
-    heroId = self.param[1]
-  })
-end
-
-function MarryBookPage:_UpdateAffectionCallBack()
-  self:_LoadInformation()
 end
 
 return MarryBookPage

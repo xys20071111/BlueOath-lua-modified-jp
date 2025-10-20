@@ -30,11 +30,6 @@ function DockPage:DoOnOpen()
   self.m_indexMax = Logic.dockLogic:CalculatePropIndex(self.m_tabHaveHero[1], SHOWPROPNUM) + 1
   self:_LoadShipItem(self.m_tabShowHero, self.m_showPropIndex)
   self:OpenTopPage("DockPage", 1, UIHelper.GetString(920000162), self, true)
-  local dotinfo = {
-    info = "ui_shipyard",
-    type = "main_shipyard"
-  }
-  RetentionHelper.Retention(PlatformDotType.uilog, dotinfo)
   eventManager:SendEvent(LuaEvent.TopAddItem, {isShow = false, CurrencyInfo = nil})
 end
 

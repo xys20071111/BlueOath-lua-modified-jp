@@ -80,9 +80,9 @@ function HomeActivityEnter:_StartCarousel()
     if next(config.red_dot) then
       self.page:RegisterRedDotById(tabPart.im_redflag, config.red_dot, config.id)
     end
-    if Logic.redDotLogic.Supply() then
-      tabPart.im_redflag.gameObject:SetActive(true)
-    end
+    -- if Logic.redDotLogic.Supply() then
+    --   tabPart.im_redflag.gameObject:SetActive(true)
+    -- end
   end)
   UIHelper.CreateSubPart(self.m_tabWidgets.obj_actTogItem, self.m_tabWidgets.trans_actTog, #self.actConfig, function(nIndex, tabPart)
     tabPart.obj_select:SetActive(false)
