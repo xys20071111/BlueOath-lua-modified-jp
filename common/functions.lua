@@ -1,6 +1,7 @@
-local require = _ENV.require
-local string = _ENV.string
-local table = _ENV.table
+local require = require
+local string = string
+local table = table
+local GlobalLogFile = io.open("./log.txt", "w")
 
 function string.split(input, delimiter)
   input = tostring(input)
@@ -45,7 +46,7 @@ function import(moduleName, currentModuleName)
 end
 
 function reimport(name)
-  local package = _ENV.package
+  local package = package
   package.loaded[name] = nil
   package.preload[name] = nil
   return require(name)
@@ -158,7 +159,7 @@ function traceTable(tb, printTableAddress, depthMax)
   return fun(tb, "", "", 0)
 end
 
-local function stringify(...)
+local stringify = function(...)
   local arg = {
     ...
   }
@@ -207,13 +208,19 @@ function logError(...)
     end
   end
   local str = stringify(...)
-  LuaInterface_Debugger.LogError(tostring(prefix) .. tostring(str) .. "\n" .. traceback)
+  local logText = tostring(prefix) .. tostring(str) .. "\n" .. traceback
+  LuaInterface_Debugger.LogError(logText)
+  GlobalLogFile:write(logText)
+  GlobalLogFile:flush()
 end
 
 function logWarning(...)
   local traceback = debug.traceback("", 2)
   local str = stringify(...)
-  LuaInterface_Debugger.LogWarning(tostring(str) .. "\n" .. traceback)
+  local logText = tostring(str) .. "\n" .. traceback
+  LuaInterface_Debugger.LogWarning(logText)
+  GlobalLogFile:write(logText)
+  GlobalLogFile:flush()
 end
 
 function logDebug(...)
@@ -223,6 +230,8 @@ end
 function log(...)
   local str = stringify(...)
   LuaInterface_Debugger.Log(str)
+  GlobalLogFile:write(str)
+  GlobalLogFile:flush()
 end
 
 function table.empty(t)
@@ -550,7 +559,7 @@ function string.ucfirst(input)
   return string.upper(string.sub(input, 1, 1)) .. string.sub(input, 2)
 end
 
-local function urlencodechar(char)
+local urlencodechar = function(char)
   return "%" .. string.format("%02X", string.byte(char))
 end
 
@@ -651,10 +660,9 @@ function clone(object)
 end
 
 function IsNil(uobj)
-  local function Test()
+  local Test = function()
     return uobj == nil or uobj:Equals(nil)
   end
-  
   local r, errRet = pcall(Test, err)
   if not r then
     return true
@@ -668,8 +676,7 @@ end
 
 function DeepReplace(src, dst)
   local lookup_table = {}
-  
-  local function _replace(src, dst)
+  local _replace = function(src, dst)
     for k, v in pairs(src) do
       if dst[k] == nil then
         src[k] = nil
@@ -685,7 +692,6 @@ function DeepReplace(src, dst)
       end
     end
   end
-  
   _replace(src, dst)
 end
 
