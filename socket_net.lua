@@ -58,9 +58,7 @@ function Socket.OnReceived(handle, method, time, errcode, errmsg, seq, isRespons
       end
     end
   end
-  if printout then
-    log("[RECEIVED RESEND] message: " .. method .. ", errcode: " .. tostring(errcode) .. ", errmsg: " .. errmsg)
-  end
+    log("[RECEIVED] message: " .. method .. ", errcode: " .. tostring(errcode) .. ", errmsg: " .. errmsg)
   if time ~= nil and time ~= 0 then
     _FixTime(time)
   end
@@ -100,8 +98,8 @@ function Socket.OnReceived(handle, method, time, errcode, errmsg, seq, isRespons
   end
   local pbType = types[method]
   if pbType == nil then
-    log("OnReceived: no pbType  method: " .. method)
-    listener.handler(listener.target, nil, state, errcode, errmsg)
+    log("OnReceived: no pbType  method: " .. method .. ", try pass raw payload to listener")
+    listener.handler(listener.target, payload, state, errcode, errmsg)
   elseif payload == nil then
     log("OnReceived: payload is nil")
     listener.handler(listener.target, nil, state, errcode, errmsg)

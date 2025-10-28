@@ -488,7 +488,6 @@ function HomePage:_UpdateSignInfo()
 end
 
 function HomePage:_CorSignCheck()
-  logWarning("_CorSignCheck 111111111111")
   if self.m_signTimer ~= nil then
     self.m_signTimer:Stop()
     self.m_signTimer = nil
@@ -872,7 +871,8 @@ function HomePage:_PlayerData()
   self.tab_Widgets.tx_server.text = Logic.loginLogic.SDKInfo and Logic.loginLogic.SDKInfo.name or UIHelper.GetString(920000277)
   local id = platformManager:getRoleId() or math.tointeger(tabUserInfo.Uid)
   self.tab_Widgets.tx_id.text = string.format(UIHelper.GetString(920000739), id)
-  local inGuild = Data.guildData:inGuild()
+  -- 暂时禁用掉公会信息
+  local inGuild = false -- Data.guildData:inGuild()
   if inGuild then
     local ourGuild = Data.guildData:getOurGuildInfo()
     self.tab_Widgets.tx_guild.text = string.format(UIHelper.GetString(920000738), ourGuild:getName())

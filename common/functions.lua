@@ -83,7 +83,7 @@ end
 function printTable(tab)
   local str = {}
   local tabRecord = {}
-  
+
   local function printTableImp(tab, tabRecord, space)
     local ret = ""
     if tab == nil then
@@ -107,7 +107,7 @@ function printTable(tab)
     end
     return ret .. "\n"
   end
-  
+
   local str = printTableImp(tab, tabRecord, "")
   tabRecord = nil
   return str
@@ -122,7 +122,7 @@ function traceTable(tb, printTableAddress, depthMax)
   end
   local traceMap = {}
   traceMap[tb] = "."
-  
+
   local function fun(tb, space, name, depth)
     local nextSpace = space .. "    "
     local ret = ""
@@ -155,7 +155,7 @@ function traceTable(tb, printTableAddress, depthMax)
     end
     return ret .. "\n"
   end
-  
+
   return fun(tb, "", "", 0)
 end
 
@@ -208,7 +208,7 @@ function logError(...)
     end
   end
   local str = stringify(...)
-  local logText = tostring(prefix) .. tostring(str) .. "\n" .. traceback
+  local logText = tostring(prefix) .. tostring(str) .. "\n" .. traceback .. '\n'
   LuaInterface_Debugger.LogError(logText)
   GlobalLogFile:write(logText)
   GlobalLogFile:flush()
@@ -217,7 +217,7 @@ end
 function logWarning(...)
   local traceback = debug.traceback("", 2)
   local str = stringify(...)
-  local logText = tostring(str) .. "\n" .. traceback
+  local logText = tostring(str) .. "\n" .. traceback .. '\n'
   LuaInterface_Debugger.LogWarning(logText)
   GlobalLogFile:write(logText)
   GlobalLogFile:flush()
@@ -230,7 +230,7 @@ end
 function log(...)
   local str = stringify(...)
   LuaInterface_Debugger.Log(str)
-  GlobalLogFile:write(str)
+  GlobalLogFile:write(str .. '\n')
   GlobalLogFile:flush()
 end
 
@@ -641,7 +641,7 @@ end
 
 function clone(object)
   local lookup_table = {}
-  
+
   local function _copy(object)
     if type(object) ~= "table" then
       return object
@@ -655,7 +655,7 @@ function clone(object)
     end
     return setmetatable(new_table, getmetatable(object))
   end
-  
+
   return _copy(object)
 end
 
