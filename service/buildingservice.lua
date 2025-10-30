@@ -8,6 +8,7 @@ end
 function BuildingService:_InitHandlers()
   self:BindEvent("building.AddBuilding", self._OnAddBuilding, self)
   self:BindEvent("building.UpdateBuildingInfo", self._UpdateBuildingInfo, self)
+  self:BindEvent("building.custom.UpdateBuildingInfo", self._CustomUpdateBuildingInfo, self)
   self:BindEvent("building.UpgradeBuilding", self._OnUpBuilding, self)
   self:BindEvent("building.DegradeBuilding", self._OnDownBuilding, self)
   self:BindEvent("building.SetHero", self._OnSetBuildingHero, self)
@@ -29,7 +30,7 @@ function BuildingService:_InitHandlers()
 end
 
 function BuildingService:AddBuilding(tid, index)
-  local args = {Tid = tid, Index = index}
+  local args = { Tid = tid, Index = index }
   args = dataChangeManager:LuaToPb(args, building_pb.TADDBUILDINGARG)
   self:SendNetEvent("building.AddBuilding", args)
 end
@@ -45,7 +46,7 @@ function BuildingService:_OnAddBuilding(ret, state, err, errmsg)
 end
 
 function BuildingService:ReceiveBuilding(buildingId)
-  local args = {BuildingId = buildingId}
+  local args = { BuildingId = buildingId }
   args = dataChangeManager:LuaToPb(args, building_pb.TRECEIVEBYBUILDINGARG)
   self:SendNetEvent("building.ReceiveBuilding", args)
 end
@@ -60,7 +61,7 @@ function BuildingService:_ReceiveBuilding(ret, state, err, errmsg)
 end
 
 function BuildingService:SendUpBuilding(buildingId)
-  local args = {BuildingId = buildingId}
+  local args = { BuildingId = buildingId }
   args = dataChangeManager:LuaToPb(args, building_pb.TUPGRADEBUILDINGARG)
   self:SendNetEvent("building.UpgradeBuilding", args, args)
 end
@@ -74,7 +75,7 @@ function BuildingService:_OnUpBuilding(ret, state, err, errmsg)
 end
 
 function BuildingService:SendDownBuilding(buildingId)
-  local args = {BuildingId = buildingId}
+  local args = { BuildingId = buildingId }
   args = dataChangeManager:LuaToPb(args, building_pb.TUPGRADEBUILDINGARG)
   self:SendNetEvent("building.DegradeBuilding", args)
 end
@@ -91,7 +92,7 @@ function BuildingService:_OnDownBuilding(ret, state, err, errmsg)
 end
 
 function BuildingService:SendSetHero(buildingId, heroIdList)
-  local args = {BuildingId = buildingId, HeroIdList = heroIdList}
+  local args = { BuildingId = buildingId, HeroIdList = heroIdList }
   args = dataChangeManager:LuaToPb(args, building_pb.TSETHEROARG)
   self:SendNetEvent("building.SetHero", args)
 end
@@ -105,7 +106,7 @@ function BuildingService:_OnSetBuildingHero(ret, state, err, errmsg)
 end
 
 function BuildingService:SendSetBuildingListHero(buildingIdList, heroIdList)
-  local args = {BuildingIdList = buildingIdList, HeroIdList = heroIdList}
+  local args = { BuildingIdList = buildingIdList, HeroIdList = heroIdList }
   args = dataChangeManager:LuaToPb(args, building_pb.TSETBUILDINGLISTHEROARG)
   self:SendNetEvent("building.SetBuildingListHero", args)
 end
@@ -118,7 +119,7 @@ function BuildingService:_SetBuildingListHero(ret, state, err, errmsg)
 end
 
 function BuildingService:FinishBuilding(buildingId)
-  local args = {BuildingId = buildingId}
+  local args = { BuildingId = buildingId }
   args = dataChangeManager:LuaToPb(args, building_pb.TFINISHBUILDINGARG)
   self:SendNetEvent("building.FinishBuilding", args, buildingId)
 end
@@ -171,7 +172,7 @@ function BuildingService:_ComposeItem(ret, state, err, errmsg)
 end
 
 function BuildingService:ReceiveItem(buildingId)
-  local args = {BuildingId = buildingId}
+  local args = { BuildingId = buildingId }
   args = dataChangeManager:LuaToPb(args, building_pb.TRECEIVEBYBUILDINGARG)
   self:SendNetEvent("building.ReceiveItem", args)
 end
@@ -200,7 +201,7 @@ function BuildingService:_ReceiveAll(ret, state, err, errmsg)
 end
 
 function BuildingService:ReceiveResource(resourceId)
-  local args = {ResourceId = resourceId}
+  local args = { ResourceId = resourceId }
   args = dataChangeManager:LuaToPb(args, building_pb.TRECEIVEBYRESOURCEARG)
   self:SendNetEvent("building.ReceiveResource", args)
 end
@@ -228,8 +229,18 @@ function BuildingService:_UpdateBuildingInfo(ret, state, err, errmsg)
   end
 end
 
+function BuildingService:_CustomUpdateBuildingInfo(ret, state, err, errmsg)
+  if err == 0 then
+    local buildingInfo = cjson.decode(ret)
+    Data.buildingData:SetData(buildingInfo)
+    self:SendLuaEvent(LuaEvent.BuildingRefreshData)
+  else
+    logError("err: " .. err .. ", errmsg: " .. errmsg)
+  end
+end
+
 function BuildingService:UseStrengthSpeedup(buildingId, useCount)
-  local args = {BuildingId = buildingId, UseCount = useCount}
+  local args = { BuildingId = buildingId, UseCount = useCount }
   args = dataChangeManager:LuaToPb(args, building_pb.TUSESTRENGTHSPEEDUPARG)
   self:SendNetEvent("building.UseStrengthSpeedup", args)
 end
@@ -243,7 +254,7 @@ function BuildingService:_UseStrengthSpeedup(ret, state, err, errmsg)
 end
 
 function BuildingService:UpdateHeroAddition(buildingIdList)
-  local args = {BuildingIdList = buildingIdList}
+  local args = { BuildingIdList = buildingIdList }
   args = dataChangeManager:LuaToPb(args, building_pb.TUPDATEHEROADDITIONARG)
   self:SendNetEvent("building.UpdateHeroAddition", args)
 end
@@ -293,7 +304,7 @@ function BuildingService:_OnTriggerPlot(ret, state, err, errmsg)
 end
 
 function BuildingService:SaveTactic(tacticList)
-  local args = {TacticList = tacticList}
+  local args = { TacticList = tacticList }
   args = dataChangeManager:LuaToPb(args, building_pb.TSAVEBUILDINGTACTICARG)
   self:SendNetEvent("building.SaveTactic", args)
 end
@@ -327,7 +338,7 @@ function BuildingService:_ChangeTacticName(ret, state, err, errmsg)
 end
 
 function BuildingService:RemoveTactic(buildingId, index)
-  local args = {BuildingId = buildingId, Index = index}
+  local args = { BuildingId = buildingId, Index = index }
   args = dataChangeManager:LuaToPb(args, building_pb.TREMOVEBUILDINGTACTICARG)
   self:SendNetEvent("building.RemoveTactic", args)
 end
