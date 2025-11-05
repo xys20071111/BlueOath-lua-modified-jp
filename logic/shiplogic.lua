@@ -1856,7 +1856,7 @@ end
 function ShipLogic:GetReplaceSkillId(pSkillId, heroId)
   local skillSerData = Data.heroData:GetHeroById(heroId).PSkill
   for _, v in ipairs(skillSerData) do
-    if v.PSkillId == pSkillId and v.Replace ~= 0 then
+    if v.PSkillId == pSkillId and v.Replace and v.Replace ~= 0 then
       return v.Replace
     end
   end
