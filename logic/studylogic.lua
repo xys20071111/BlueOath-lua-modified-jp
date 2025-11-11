@@ -371,7 +371,7 @@ end
 
 function StudyLogic:CheckHeroAlreadyStudy(heroId)
   local data = Data.studyData:GetStudyData()
-  for i, v in pairs(data.ArrProgress) do
+  for i, v in pairs(data.ArrProgress or {}) do
     if v.HeroId == heroId then
       return true
     end
@@ -381,7 +381,7 @@ end
 
 function StudyLogic:GetStudyFinish(heroId, pskillId)
   local data = Data.studyData:GetStudyData()
-  for i, v in pairs(data.ArrProgress) do
+  for i, v in pairs(data.ArrProgress or {}) do
     if v.HeroId == heroId and v.PSkillId == pskillId then
       local textbookId = v.TextbookId
       local duration = Logic.studyLogic:GetTextBookDuration(textbookId)
