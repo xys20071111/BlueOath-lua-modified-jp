@@ -1,4 +1,5 @@
 local HeroService = class("servic.HeroService", Service.BaseService)
+local cjson = require("cjson")
 
 function HeroService:initialize()
   self:_InitHandlers()
@@ -7,6 +8,7 @@ end
 function HeroService:_InitHandlers()
   self:BindEvent("hero.GetHeroInfo", self._GetHeroInfo, self)
   self:BindEvent("hero.UpdateHeroBagData", self._UpdateHeroBagData, self)
+  self:BindEvent("hero.custom.UpdateHeroBagData", self._CustomUpdateHeroBagData, self)
   self:BindEvent("hero.HeroIntensify", self._HeroIntensify, self)
   self:BindEvent("hero.ChangeEquip", self._ChangeEquip, self)
   self:BindEvent("hero.HeroAdvance", self._HeroBreak, self)
@@ -119,6 +121,16 @@ end
 function HeroService:_UpdateHeroBagData(ret, state, err, errmsg)
   if ret ~= nil then
     local info = dataChangeManager:PbToLua(ret, hero_pb.THEROINFO)
+    Data.heroData:SetData(info)
+    Data.wishData:UpdateWishHero()
+    Data.equipData:RefreshHeroEquipData()
+    self:SendLuaEvent(LuaEvent.UpdateHeroData)
+  end
+end
+
+function HeroService:_CustomUpdateHeroBagData(ret, state, err, errmsg)
+  if ret ~= nil then
+    local info = cjson.decode(ret)
     Data.heroData:SetData(info)
     Data.wishData:UpdateWishHero()
     Data.equipData:RefreshHeroEquipData()
