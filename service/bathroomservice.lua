@@ -105,10 +105,10 @@ function BathroomService:_BathroomInfoRet(ret, state, err, errmsg)
     local info = dataChangeManager:PbToLua(ret, bathroom_pb.TBATHROOMINFO)
     Data.bathroomData:SetData(info)
     self:SendLuaEvent(LuaEvent.BathroomInfo)
-    if Logic.loginLogic:GetLoginOK() == true then
-      local noticeParam = Logic.bathroomLogic:GetPushNoticeParams(info.HeroList)
-      self:SendLuaEvent(LuaEvent.PushNotice, noticeParam)
-    end
+    -- if Logic.loginLogic:GetLoginOK() == true then
+      -- local noticeParam = Logic.bathroomLogic:GetPushNoticeParams(info.HeroList)
+      -- self:SendLuaEvent(LuaEvent.PushNotice, noticeParam)
+    -- end
   end
 end
 
