@@ -7,6 +7,7 @@ function LuaUIPage:Init(cs_page)
   self.m_timerTable = {}
   self.redDot_eventHandlers = {}
   self.tab_Widgets = self.cs_page:GetComponentsNeed()
+  log("Open " .. cs_page.name)
 end
 
 function LuaUIPage:GetComponentNeed(tabFields)

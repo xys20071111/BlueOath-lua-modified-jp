@@ -58,7 +58,9 @@ function Socket.OnReceived(handle, method, time, errcode, errmsg, seq, isRespons
       end
     end
   end
+  if printout then
     log("[RECEIVED] message: " .. method .. ", errcode: " .. tostring(errcode) .. ", errmsg: " .. errmsg)
+  end
   if time ~= nil and time ~= 0 then
     _FixTime(time)
   end

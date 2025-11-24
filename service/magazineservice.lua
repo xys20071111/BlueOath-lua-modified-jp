@@ -40,7 +40,6 @@ function MagazineService:_CustomUpdateMagazineInfo(ret, state, err, errmsg)
     logError("_GetMagazine failed " .. errmsg)
   elseif ret ~= nil then
     local info = cjson.decode(ret)
-    log(info)
     Data.magazineData:SetData(info)
     self:SendLuaEvent(LuaEvent.GetMagazineMsg)
   end
